@@ -140,6 +140,7 @@ class Configuration
     private $availableModes = array(
         VCR::MODE_NEW_EPISODES,
         VCR::MODE_ONCE,
+        VCR::MODE_STRICT,
         VCR::MODE_NONE,
     );
 
