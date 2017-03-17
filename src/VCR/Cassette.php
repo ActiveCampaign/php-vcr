@@ -68,14 +68,61 @@ class Cassette
      */
     public function playback(Request $request)
     {
-        foreach ($this->storage as $recording) {
-            $storedRequest = Request::fromArray($recording['request']);
-            if ($storedRequest->matches($request, $this->getRequestMatchers())) {
-                return Response::fromArray($recording['response']);
+        if ($this->config->getMode() === VCR::MODE_STRICT) {
+            // If the cassette is new don't try to match an existing stored request but force a new recording
+            if ($this->isNew()) {
+                return null;
+            }
+
+            if ($this->storage->valid()) {
+                $recording = $this->storage->current();
+                $this->storage->next();
+
+                if ($response = $this->getResponseFromStoredRequest($request, $recording)) {
+                    return $response;
+                }
+            }
+        } else {
+            foreach ($this->storage as $recording) {
+                if ($response = $this->getResponseFromStoredRequest($request, $recording)) {
+                    return $response;
+                }
             }
         }
 
         return null;
+    }
+
+    /**
+     * Get a stored response from the current request
+     * 
+     * @param  Request $request   Request.
+     * @param  array   $recording The stored recording
+     *
+     * @return Response|null Response for specified request.
+     */
+    public function getResponseFromStoredRequest(Request $request, $recording)
+    {
+        $storedRequest = Request::fromArray($recording['request']);
+        if ($storedRequest->matches($request, $this->getRequestMatchers())) {
+            return Response::fromArray($recording['response']);
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if the cassette has finished playing all stored requests
+     * 
+     * @return boolean
+     */
+    public function isFinished()
+    {
+        if ($this->config->getMode() === VCR::MODE_STRICT) {
+            return !$this->storage->valid();
+        }
+
+        return true;
     }
 
     /**

@@ -28,6 +28,13 @@ class VCR
      */
     const MODE_NONE = 'none';
 
+    /**
+     * Behaves like MODE_ONCE with the exception that it will only allow making new recordings if the cassette is new
+     * and it will only allow playback if the cassette is already created. The cassette must play entirely for
+     * strict mode to be fulfilled
+     */
+    const MODE_STRICT = 'strict';
+
     public static function __callStatic($method, $parameters)
     {
         $instance = VCRFactory::get('VCR\Videorecorder');
