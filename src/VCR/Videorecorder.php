@@ -158,7 +158,11 @@ class Videorecorder
         $this->cassette = null;
 
         if ($cassette && $this->config->getMode() === VCR::MODE_STRICT) {
-            Assertion::true($cassette->isFinished(), $this->config->getMode() . ' playback was requested but the cassette did not play in its entirety.');
+            Assertion::true(
+                $cassette->isFinished(),
+                $this->config->getMode() . ' playback was requested but the cassette did not play in its entirety.'
+                    ."\nCassette: ".$cassette->getName()
+            );
         }
     }
 
