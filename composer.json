@@ -2,7 +2,13 @@
     "name": "php-vcr/php-vcr",
     "description": "Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.",
     "license": "MIT",
-
+    
+    "scripts": {
+        "test": "./vendor/bin/phpunit",
+        "lint": "./vendor/bin/php-cs-fixer fix --verbose --diff --dry-run --config-file=.php_cs",
+        "fix": "./vendor/bin/php-cs-fixer fix --verbose --diff --config-file=.php_cs"
+    },
+    
     "authors": [
         {
             "name": "Adrian Philipp",
@@ -21,7 +27,8 @@
         "phpunit/phpunit": "^4.8|^5.0",
         "sebastian/version": "^1.0.3|^2.0",
         "mikey179/vfsStream": "^1.2",
-        "lapistano/proxy-object": "dev-master#d7184a479f502d5a0f96d0bae73566dbb498da8f"
+        "lapistano/proxy-object": "dev-master#d7184a479f502d5a0f96d0bae73566dbb498da8f",
+        "friendsofphp/php-cs-fixer": "^1.12"
     },
 
     "autoload": {

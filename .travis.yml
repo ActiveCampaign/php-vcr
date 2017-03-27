@@ -19,6 +19,10 @@ matrix:
       php: 7.0
     - env: TEST_DIR=. COMPOSER_FLAGS="--prefer-lowest"
       php: 7.0
+    - env: TEST_DIR=.
+      php: 7.1
+    - env: TEST_DIR=. COMPOSER_FLAGS="--prefer-lowest"
+      php: 7.1
     - env: TEST_DIR=tests/integration/guzzle/3
       php: 5.6
     - env: TEST_DIR=tests/integration/guzzle/4
@@ -34,11 +38,13 @@ before_install:
 install:
   - composer update --prefer-source -o $COMPOSER_FLAGS
   - PHPUNIT_BIN=$(pwd)/vendor/bin/phpunit
+  - PHPCS_FIXER_BIN=$(pwd)/vendor/bin/php-cs-fixer
   - cd ${TEST_DIR}
   - composer update --prefer-source -o $COMPOSER_FLAGS
 
 script:
   - $PHPUNIT_BIN --coverage-clover=coverage.clover
+  - test $TEST_DIR = "." && $PHPCS_FIXER_BIN fix --config-file=.php_cs --dry-run --diff $TRAVIS_BUILD_DIR || echo "Continue without php-cs-fixer"
 
 after_success:
   - wget https://scrutinizer-ci.com/ocular.phar
